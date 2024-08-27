@@ -9,6 +9,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const loginRouter = require("./router/login");
+app.use("/api", loginRouter);
+
 app.listen(3000, () => {
   console.log("server is running on port 3000");
 });
