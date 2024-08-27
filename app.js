@@ -9,6 +9,19 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const jwtConfig = require("./jwt_config/index");
+// 安装express-jwt用于解析token
+const { express: jwt } = require("express-jwt");
+app.use(
+  jwt({
+    secret: jwtConfig.jwtSecretKey,
+    algorithms: ["HS256"],
+  }).unless({
+    // 忽略以/api为开头的路由（登录注册路由），原因：token是登录之后才生成的
+    path: [/^\/api\//],
+  })
+);
+
 const loginRouter = require("./router/login");
 app.use("/api", loginRouter);
 
