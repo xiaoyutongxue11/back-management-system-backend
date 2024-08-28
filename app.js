@@ -9,9 +9,20 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  // status默认为1，表示失败，为0表示成功
+  res.cc = (err, status = 1) => {
+    res.send({
+      status,
+      message: err instanceof Error ? err.message : err,
+    });
+  };
+  next();
+});
+
 const jwtConfig = require("./jwt_config/index");
 // 安装express-jwt用于解析token
-const { express: jwt } = require("express-jwt");
+const { expressjwt: jwt } = require("express-jwt");
 app.use(
   jwt({
     secret: jwtConfig.jwtSecretKey,

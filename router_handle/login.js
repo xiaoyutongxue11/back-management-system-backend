@@ -1,5 +1,8 @@
-const bcrypt = require("bcryptjs/dist/bcrypt");
+const bcrypt = require("bcryptjs");
 const db = require("../db/index");
+const jwt = require("jsonwebtoken");
+const jwtConfig = require("../jwt_config/index");
+
 exports.register = (req, res) => {
   const registerInfo = req.body;
   if (!registerInfo.account || !registerInfo.password) {
@@ -29,6 +32,7 @@ exports.register = (req, res) => {
         password: registerInfo.password,
         identity,
         create_time,
+        status: 0,
       },
       (err, result) => {
         if (result.affectedRows !== 1) {
@@ -47,5 +51,32 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  res.send("login");
+  const loginInfo = req.body;
+  const sql = "select * from users where account=?";
+  db.query(sql, loginInfo.account, (err, result) => {
+    if (err) return res.cc(err);
+    if (result.length !== 1) return res.cc("登录失败");
+    const compareResult = bcrypt.compareSync(
+      loginInfo.password,
+      result[0].password
+    );
+    if (!compareResult) return res.cc("登录失败");
+    if (result[0].status === 1) return res.cc("账号被冻结");
+    const user = {
+      ...result[0],
+      password: "",
+      imgUrl: "",
+      create_time: "",
+      update_time: "",
+    };
+    const tokenStr = jwt.sign(user, jwtConfig.jwtSecretKey, {
+      expiresIn: jwtConfig.expiresIn,
+    });
+    res.send({
+      status: 0,
+      result: result[0],
+      message: "登录成功",
+      token: "Bearer " + tokenStr,
+    });
+  });
 };
