@@ -55,12 +55,12 @@ exports.login = (req, res) => {
   const sql = "select * from users where account=?";
   db.query(sql, loginInfo.account, (err, result) => {
     if (err) return res.cc(err);
-    if (result.length !== 1) return res.cc("登录失败");
+    if (result.length !== 1) return res.cc("该账号不存在");
     const compareResult = bcrypt.compareSync(
       loginInfo.password,
       result[0].password
     );
-    if (!compareResult) return res.cc("登录失败");
+    if (!compareResult) return res.cc("账号或密码有误");
     if (result[0].status === 1) return res.cc("账号被冻结");
     const user = {
       ...result[0],
