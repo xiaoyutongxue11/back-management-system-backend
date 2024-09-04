@@ -8,11 +8,15 @@ const jwtConfig = require("./jwt_config/index");
 const { expressjwt: jwt } = require("express-jwt");
 const loginRouter = require("./router/login");
 const Joi = require("joi");
+// multer是一个node.js的插件，用于处理mutipart/form-data类型的表单数据，主要用于文件时上传
+const multer = require("multer");
+const upload = multer({ dest: "./public/upload" });
 
 app.use(cors());
 // 当extended为false时，req.body只能解析application/x-www-form-urlencoded（数组/字符串）格式的数据，为true时，可以解析application/json（任意）格式的数据
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(upload.any());
 
 app.use((req, res, next) => {
   // status默认为1，表示失败，为0表示成功
