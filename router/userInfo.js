@@ -13,5 +13,7 @@ router.post("/bindingAccount", userInfoHandler.bindingAccount);
 router.get("/getUserInfo", userInfoHandler.getUserInfo);
 // 修改用户信息
 router.post("/updateUserInfo", userInfoHandler.updateUserInfo);
+// 修改用户密码
+router.post("/changePassword", userInfoHandler.changePassword);
 
 module.exports = router;

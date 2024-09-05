@@ -77,3 +77,29 @@ exports.updateUserInfo = (req, res) => {
     });
   });
 };
+
+exports.changePassword = (req, res) => {
+  const sql = "select password from users where id=?";
+  db.query(sql, req.body.id, (err, result) => {
+    if (err) return res.cc(err);
+    const compareResult = bcrypt.compareSync(
+      req.body.oldPassword,
+      result[0].password
+    );
+    if (!compareResult)
+      return res.send({
+        status: 1,
+        message: "原密码输入错误",
+      });
+    // 加密后的新密码
+    req.body.newPassword = bcrypt.hashSync(req.body.newPassword, 10);
+    const sql1 = "update users set password=? where id=?";
+    db.query(sql1, [req.body.newPassword, req.body.id], (err, result) => {
+      if (err) return res.cc(err);
+      res.send({
+        status: 0,
+        message: "修改成功",
+      });
+    });
+  });
+};
