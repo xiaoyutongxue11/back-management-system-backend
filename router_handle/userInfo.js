@@ -30,3 +30,21 @@ exports.uploadAvatar = (req, res) => {
     }
   );
 };
+
+exports.bindingAccount = (req, res) => {
+  const { onlyId, account, url } = req.body;
+  const sql = "update image set account=? where onlyId=?";
+  db.query(sql, [account, onlyId], (err, result) => {
+    if (err) return res.cc(err);
+    if (result.affectedRows == 1) {
+      const sql1 = "update users set image_url=? where account=?";
+      db.query(sql1, [url, account], (err, result) => {
+        if (err) return res.cc(err);
+        res.send({
+          status: 0,
+          message: "绑定成功",
+        });
+      });
+    }
+  });
+};
