@@ -60,3 +60,20 @@ exports.getUserInfo = (req, res) => {
     });
   });
 };
+
+exports.updateUserInfo = (req, res) => {
+  let updates = {};
+  if (req.body.email) updates.email = req.body.email;
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.sex) updates.sex = req.body.sex;
+  if (req.body.department) updates.department = req.body.department;
+
+  const sql = "update users set ? where id=?";
+  db.query(sql, [updates, req.body.id], (err, result) => {
+    if (err) return res.cc(err);
+    res.send({
+      status: 0,
+      message: "修改成功",
+    });
+  });
+};

@@ -11,5 +11,7 @@ router.post("/uploadAvatar", userInfoHandler.uploadAvatar);
 router.post("/bindingAccount", userInfoHandler.bindingAccount);
 // 获取用户信息
 router.get("/getUserInfo", userInfoHandler.getUserInfo);
+// 修改用户信息
+router.post("/updateUserInfo", userInfoHandler.updateUserInfo);
 
 module.exports = router;
