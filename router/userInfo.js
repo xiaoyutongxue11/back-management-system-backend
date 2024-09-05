@@ -22,5 +22,7 @@ router.post(
   expressJoi(password_limit),
   userInfoHandler.changePassword
 );
+// 查询账号和邮箱是否匹配
+router.post("/verifyAccountAndEmail", userInfoHandler.verifyAccountAndEmail);
 
 module.exports = router;

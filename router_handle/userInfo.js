@@ -103,3 +103,19 @@ exports.changePassword = (req, res) => {
     });
   });
 };
+
+exports.verifyAccountAndEmail = (req, res) => {
+  const { account, email } = req.body;
+  const sql = "select email from users where account=?";
+  db.query(sql, account, (err, result) => {
+    if (err) return res.cc(err);
+    if (email === result[0].email) {
+      res.send({
+        status: 0,
+        message: "查询成功",
+      });
+    } else {
+      res.send({ status: 1, message: "没有查询到与账号匹配的邮箱" });
+    }
+  });
+};
