@@ -51,8 +51,12 @@ exports.bindingAccount = (req, res) => {
 
 exports.getUserInfo = (req, res) => {
   const sql = "select * from users where id=?";
-  db.query(sql, req.body.id, (err, result) => {
+  db.query(sql, req.query.id, (err, result) => {
     if (err) return res.cc(err);
-    res.send(result);
+    res.send({
+      status: 0,
+      message: "操作成功",
+      data: result[0],
+    });
   });
 };
